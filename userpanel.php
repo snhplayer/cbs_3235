@@ -1,0 +1,172 @@
+<?php
+// Подключение к базе данных
+$dbHost = 'localhost';
+$dbUsername = 'root'; // ваше имя пользователя в базе данных
+$dbPassword = ''; // ваш пароль к базе данных
+$dbName = 'cbs'; // название вашей базы данных
+
+// Создание подключения к базе данных
+$conn = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
+
+// Проверка подключения
+if ($conn->connect_error) {
+    die("Ошибка подключения: " . $conn->connect_error);
+}
+
+if(!isset($_COOKIE['user_id'])) {
+
+  // показываем кнопки регистрации и авторизации
+  echo "Зарегистрируйтесь или войдите, чтобы получить доступ к сайту";
+  echo "<div class=\"container\">";
+
+  echo "<a href=\"register.php\" class=\"button\">Зарегистрироваться</a>";
+  echo "<a href=\"login.php\" class=\"button\">Войти</a>";
+  echo "</div>";
+  exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
+    // Удаление куки, например, 'user_id'
+    setcookie('user_id', '', time() - 3600, '/'); // Установка времени в прошлое удалит куки
+
+    // Перенаправление на страницу входа
+    header('Location: login.php');
+    exit();
+}
+
+?>
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Личный Кабинет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .user-account {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .account-section {
+            margin-bottom: 20px;
+        }
+
+        .account-section label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .scrollable-section {
+            max-height: 300px; /* или другая высота по вашему выбору */
+            overflow-y: auto; /* Включает вертикальный скроллинг */
+            overflow-x: hidden; /* Предотвращает горизонтальный скроллинг */
+            -ms-overflow-style: none; /* Для IE и Edge */
+            scrollbar-width: none; /* Для Firefox */
+        }
+
+        .scrollable-section::-webkit-scrollbar {
+            display: none; /* Для Chrome, Safari и Opera */
+        }
+        .account-section input, .account-section p {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .account-section button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .account-section button:hover {
+            background-color: #004494;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="user-account">
+    <h2>Добро пожаловать, <?php echo $_COOKIE['username'] ?></h2>
+
+    <div class="account-section">
+        <label>Telegram ID:</label>
+        <p>@<?php echo $_COOKIE['telegram_id'] ?></p>
+    </div>
+
+    <div class="account-section">
+        <label>Пароль:</label>
+        <button>Изменить пароль</button>
+    </div>
+<h3>История бронирований</h3>
+    <div class="account-section scrollable-section">
+        
+        <?php
+    $userId = $_COOKIE['user_id']; // Или другой способ получения ID пользователя
+    $query = "SELECT m.Title, s.SessionTime, b.RowNumber, b.SeatNumber
+              FROM bookings b
+              JOIN sessions s ON b.SessionID = s.SessionID
+              JOIN movies m ON s.MovieID = m.MovieID
+              WHERE b.UserID = ?";
+    if ($stmt = $conn->prepare($query)) {
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo "<p>Фильм: " . htmlspecialchars($row['Title']) . "<br>";
+                echo "Время сеанса: " . htmlspecialchars($row['SessionTime']) . "<br>";
+                echo "Ряд: " . htmlspecialchars($row['RowNumber']) . ", Место: " . htmlspecialchars($row['SeatNumber']) . "</p>";
+            }
+        } else {
+            echo "<p>Бронирований не найдено.</p>";
+        }
+        $stmt->close();
+    }
+    ?>
+    </div>
+
+	<div class="account-section">
+	    <form action="userpanel.php" method="post">
+	        <button type="submit" name="logout">Выйти</button>
+	    </form>
+	</div>
+</div>
+
+
+
+</body>
+</html>

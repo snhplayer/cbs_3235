@@ -1,0 +1,117 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: auto;
+    max-width: 800px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+.button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    margin: 10px;
+    text-decoration: none; /* Убрать подчеркивание для ссылок */
+}
+
+.button:hover {
+    background-color: #004494;
+}
+
+/* Стили для форм */
+.form-field {
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-field input, .form-field select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-width: 350px;
+}
+
+/* Стили для страницы выбора сидений */
+.seat {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 3px;
+    border-radius: 50%;
+    background-color: #0056b3; /* Синий цвет для свободных мест */
+}
+
+.seat.occupied {
+    background-color: grey;
+}
+
+.seat:not(.occupied):hover {
+    cursor: pointer;
+    background-color: lightblue;
+}
+
+/* Стили для страницы поиска фильмов */
+.movie-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.movie {
+    width: 48%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.movie img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.movie-details {
+    margin-top: 10px;
+}
+
+/* Стили для панели администратора */
+.form-container {
+    margin-bottom: 40px;
+}
+
+.management-section {
+    margin-top: 40px;
+}
+
+.movie-item, .session-item {
+    margin-bottom: 10px;
+}
+
+/* Дополнительные стили */
+/* Добавьте здесь любые дополнительные стили, специфичные для отдельных страниц или компонентов */
