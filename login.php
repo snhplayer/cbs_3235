@@ -1,15 +1,15 @@
 
 <?php
-// Подключение к базе данных
-$dbHost = 'localhost';
-$dbUsername = 'root'; // ваше имя пользователя в базе данных
-$dbPassword = ''; // ваш пароль к базе данных
-$dbName = 'cbs'; // название вашей базы данных
 
-// Создание подключения к базе данных
+$dbHost = 'localhost';
+$dbUsername = 'root'; 
+$dbPassword = ''; 
+$dbName = 'cbs'; 
+
+
 $conn = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
 
-// Проверка подключения
+
 if ($conn->connect_error) {
     die("Ошибка подключения: " . $conn->connect_error);
 }
@@ -51,13 +51,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
-<!-- HTML-форма для входа в систему -->
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Login</title>
     <style>
-    /* Стили для всплывающего окна */
+    
     .popup {
         display: none;
         position: fixed;
@@ -90,7 +90,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         height: 100vh;
     }
 
-    /* Стили для формы */
+    
     #loginForm {
         background: white;
         padding: 20px;
@@ -105,8 +105,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     #loginForm input {
-        width: 100%; /* Установите фиксированную ширину здесь, если нужно */
-        max-width: 275px; /* Максимальная ширина полей ввода */
+        width: 100%; 
+        max-width: 275px; 
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
@@ -118,7 +118,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         color: white;
         border: none;
         cursor: pointer;
-        max-width: 295px; /* Максимальная ширина кнопки */
+        max-width: 295px; 
         padding: 10px;
         border-radius: 4px;
     }
@@ -143,7 +143,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="submit" value="Войти">
     </form>
 
-    <!-- Всплывающее окно -->
+   
     <div id="popup" class="popup">
         <div class="popup-content">
             <span class="close-btn" onclick="closePopup()">&times;</span>
@@ -158,17 +158,17 @@ document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById('loginForm');
     if(form) {
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Предотвращение стандартной отправки формы
+            e.preventDefault(); 
             var formData = new FormData(this);
 
-            fetch('login.php', { // Убедитесь, что путь указан правильно
+            fetch('login.php', { 
                 method: 'POST',
                 body: formData
             })
             .then(response => response.text())
             .then(data => {
                 lastResponse = data;
-                // Отображение сообщения в всплывающем окне
+                
                 showPopup(data);
             })
             .catch(error => console.error('Ошибка:', error));
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Функция для отображения всплывающего окна
+
 function showPopup(message) {
     var popup = document.getElementById('popup');
     var popupMessage = document.getElementById('popup-message');
@@ -186,7 +186,7 @@ function showPopup(message) {
     }
 }
 
-// Функция для закрытия всплывающего окна
+
 function closePopup() {
     var popup = document.getElementById('popup');
     if(popup) {

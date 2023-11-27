@@ -1,21 +1,20 @@
 <?php
 // Подключение к базе данных
 $dbHost = 'localhost';
-$dbUsername = 'root'; // ваше имя пользователя в базе данных
-$dbPassword = ''; // ваш пароль к базе данных
-$dbName = 'cbs'; // название вашей базы данных
+$dbUsername = 'root'; 
+$dbPassword = ''; 
+$dbName = 'cbs'; 
 
-// Создание подключения к базе данных
 $conn = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
 
-// Проверка подключения
+
 if ($conn->connect_error) {
     die("Ошибка подключения: " . $conn->connect_error);
 }
 
 if(!isset($_COOKIE['user_id'])) {
 
-  // показываем кнопки регистрации и авторизации
+  
   echo "Зарегистрируйтесь или войдите, чтобы получить доступ к сайту";
   echo "<div class=\"container\">";
 
@@ -26,10 +25,9 @@ if(!isset($_COOKIE['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
-    // Удаление куки, например, 'user_id'
-    setcookie('user_id', '', time() - 3600, '/'); // Установка времени в прошлое удалит куки
+   
+    setcookie('user_id', '', time() - 3600, '/');
 
-    // Перенаправление на страницу входа
     header('Location: login.php');
     exit();
 }

@@ -4,10 +4,10 @@ $dbHost = 'localhost';
 $dbUsername = 'root'; 
 $dbPassword = ''; 
 $dbName = 'cbs';
-// Создание подключения к базе данных
+
 $conn = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
 
-// Проверка подключения
+
 if ($conn->connect_error) {
     die("Ошибка подключения: " . $conn->connect_error);
 }
@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $telegram = $_POST['telegram'];
 
-    // Проверка на уникальность пользователя
+    
     $checkUser = $conn->prepare("SELECT * FROM Users WHERE Username = ?");
     $checkUser->bind_param("s", $username);
     $checkUser->execute();
@@ -39,10 +39,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['username']=$username;
         $_SESSION['password']=$password;
         $_SESSION['telegram']=$telegram;
-        $chat_id = $telegram; // ID пользователя Telegram, полученный из формы
+        $chat_id = $telegram; 
         $message = "Ваш код подтверждения: `" . $verificationCode . "`";
         $message = urlencode($message);
-        // Просмотреть все обновления и найти chat_id
+        
         foreach ($updates['result'] as $update) {
             if (isset($update['message']['chat']['id']) && isset($update['message']['chat']['username'])) {
                 if ($update['message']['chat']['username'] == $telegram) {
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $response = "Ошибка при регистрации.";
     }
 
-    // Отправка ответа
+
     exit($response);
 
     $stmt->close();
@@ -90,7 +90,7 @@ function getTelegramUpdates($botToken) {
     <meta charset="UTF-8">
     <title>Регистрация</title>
 <style>
-    /* Стили для всплывающего окна */
+    
     .popup {
         display: none;
         position: fixed;
@@ -123,13 +123,13 @@ function getTelegramUpdates($botToken) {
         height: 100vh;
     }
 
-    /* Стили для формы */
+    
     #registrationForm {
         background: white;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 300px; /* Можно изменить ширину формы, если нужно */
+        width: 300px; 
     }
 
     h2 {
@@ -138,8 +138,8 @@ function getTelegramUpdates($botToken) {
     }
 
     #registrationForm input {
-        width: 100%; /* Установите фиксированную ширину здесь, если нужно */
-        max-width: 275px; /* Максимальная ширина полей ввода */
+        width: 100%; 
+        max-width: 275px; 
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
@@ -151,7 +151,7 @@ function getTelegramUpdates($botToken) {
         color: white;
         border: none;
         cursor: pointer;
-        max-width: 295px; /* Максимальная ширина кнопки */
+        max-width: 295px;
         padding: 10px;
         border-radius: 4px;
     }
@@ -169,7 +169,7 @@ function getTelegramUpdates($botToken) {
 </head>
 <body>
 
-<!-- Форма регистрации -->
+
 
 
 <form id="registrationForm" method="post">
@@ -180,7 +180,7 @@ function getTelegramUpdates($botToken) {
     <input type="submit" value="Зарегистрироваться">
 </form>
 
-<!-- Всплывающее окно -->
+
 <div id="popup" class="popup">
     <div class="popup-content">
         <span class="close-btn" onclick="closePopup()">&times;</span>
@@ -195,17 +195,17 @@ document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById('registrationForm');
     if(form) {
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Предотвращение стандартной отправки формы
+            e.preventDefault(); 
             var formData = new FormData(this);
 
-            fetch('register.php', { // Убедитесь, что путь указан правильно
+            fetch('register.php', { 
                 method: 'POST',
                 body: formData
             })
             .then(response => response.text())
             .then(data => {
                 lastResponse = data;
-                // Отображение сообщения в всплывающем окне
+
                 showPopup(data);
             })
             .catch(error => console.error('Ошибка:', error));
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Функция для отображения всплывающего окна
+
 function showPopup(message) {
     var popup = document.getElementById('popup');
     var popupMessage = document.getElementById('popup-message');
@@ -223,14 +223,14 @@ function showPopup(message) {
     }
 }
 
-// Функция для закрытия всплывающего окна
+
 function closePopup() {
     var popup = document.getElementById('popup');
     if(popup) {
         popup.style.display = 'none';
     }
     if (lastResponse.includes("Код подтверждения отправлен в Telegram")) {
-        window.location.href = 'verify.php'; // Перенаправление
+        window.location.href = 'verify.php'; 
     }
 }
 </script>

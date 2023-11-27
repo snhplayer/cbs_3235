@@ -1,24 +1,24 @@
 <?php
-// Подключение к базе данных
+
 $dbHost = 'localhost';
 $dbName = 'cbs'; 
 $dbUser = 'root';
 $dbPass = '';
 
-// Подключение к БД
+
 $conn = mysqli_connect($dbHost, $dbUser, $dbPass, $dbName); 
 
-// Проверка подключения
+
 if(!$conn) {
   die("Ошибка: " . mysqli_connect_error());
 }
 
-// Данные сеанса
+
 session_start();
 
 $sessionId = $_SESSION['sessionId'];
 $user_id = $_COOKIE['user_id'];
-// Получение занятых мест   
+  
 $sql = "SELECT RowNumber, SeatNumber 
         FROM bookings 
         WHERE SessionID = $sessionId";
@@ -108,7 +108,7 @@ echo "</script>";
             height: 20px;
             margin: 3px;
             border-radius: 50%;
-            background-color: #0056b3; /* Синий цвет для свободных мест */
+            background-color: #0056b3; 
         }
 
         .seat.occupied {
@@ -138,7 +138,7 @@ echo "</script>";
         }
 
         .seat.selected {
-    background-color: #ffdd57; /* желтый цвет для выделенных мест */
+    background-color: #ffdd57; 
         }
 
 
@@ -190,28 +190,28 @@ echo "</script>";
     $(document).ready(function() {
     var selectedRow, selectedSeat;
 
-    // Обработчик клика по месту
+    
     $('.seat').on('click', function() {
-        $('.seat').removeClass('selected'); // Снимаем выделение с других мест
-        $(this).addClass('selected'); // Выделяем выбранное место
+        $('.seat').removeClass('selected'); 
+        $(this).addClass('selected'); 
         selectedRow = $(this).data('row');
         selectedSeat = $(this).data('seat');
     });
 
     $('#bookButton').on('click', function() {
-        // Проверка, выбрано ли место
+       
         if (!selectedRow || !selectedSeat) {
             alert('Пожалуйста, выберите место');
             return;
         }
 
         var user_id = 31;
-        var bookingTime = new Date().toISOString(); // Текущее время
+        var bookingTime = new Date().toISOString(); 
         var sqlQuery = `INSERT INTO \`bookings\`(\`SessionID\`, \`UserID\`, \`RowNumber\`, \`SeatNumber\`, \`BookingTime\`) VALUES ('${sessionID}', '${userID}', '${selectedRow}', '${selectedSeat}', '${bookingTime}')`;
         console.log("SQL-запрос: ", sqlQuery);
         $.ajax({
             type: "POST",
-            url: "book.php", // Укажите путь к вашему PHP-скрипту
+            url: "book.php", 
             data: {
                 row: selectedRow,
                 seat: selectedSeat,

@@ -19,34 +19,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $enteredCode = $_POST['code'];
 
     if ($enteredCode == $savedCode) {
-        // Получение имени пользователя из сессии
+
         $username=$_SESSION['username'] ?? '';
         $password=$_SESSION['password'] ?? '';
         $telegram=$_SESSION['telegram'] ?? '';
 
         if ($username) {
             $passwordHash = hash('sha256', $password);
-            // Здесь добавьте логику для активации учетной записи пользователя
-            // Например, обновление статуса пользователя в базе данных
+        
 		    $stmt = $conn->prepare("INSERT INTO Users (Username, PasswordHash, Telegram) VALUES (?, ?, ?)");
 		    $stmt->bind_param("sss", $username, $passwordHash, $telegram);
 		    $stmt->execute();
 
             if ($stmt->affected_rows > 0) {
-                // Если учетная запись успешно активирована
+                
                 $response = "Учетная запись активирована!\n";
                 header("Location: login.php");
                 exit($response);
             } else {
-                // Обработка ошибок, если активация не удалась
+                
                 $response = "Ошибка активации учетной записи.";
             }
         } else {
-            // Если имя пользователя не найдено в сессии
+           
             $response = "Ошибка сессии. Пожалуйста, попробуйте зарегистрироваться снова.";
         }
     } else {
-        // Если введенный код не совпадает
+      
         $response = "Неверный код подтверждения.";
     }
 exit($response);
@@ -62,7 +61,7 @@ $conn->close();
     <meta charset="UTF-8">
     <title>Проверка кода</title>
 <style>
-    /* Стили для всплывающего окна */
+   
     .popup {
         display: none;
         position: fixed;
@@ -95,13 +94,13 @@ $conn->close();
         height: 100vh;
     }
 
-    /* Стили для формы */
+  
     #verifyForm {
         background: white;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 300px; /* Можно изменить ширину формы, если нужно */
+        width: 300px; 
     }
 
     h2 {
@@ -110,8 +109,8 @@ $conn->close();
     }
 
     #verifyForm input {
-        width: 100%; /* Установите фиксированную ширину здесь, если нужно */
-        max-width: 275px; /* Максимальная ширина полей ввода */
+        width: 100%; 
+        max-width: 275px; 
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
@@ -123,7 +122,7 @@ $conn->close();
         color: white;
         border: none;
         cursor: pointer;
-        max-width: 295px; /* Максимальная ширина кнопки */
+        max-width: 295px; 
         padding: 10px;
         border-radius: 4px;
     }
@@ -141,7 +140,7 @@ $conn->close();
 </head>
 <body>
 
-<!-- Форма регистрации -->
+
 
 
 <form id="verifyForm" method="post">
@@ -150,7 +149,6 @@ $conn->close();
     <input type="submit" value="Проверить код">
 </form>
 
-<!-- Всплывающее окно -->
 <div id="popup" class="popup">
     <div class="popup-content">
         <span class="close-btn" onclick="closePopup()">&times;</span>
@@ -163,22 +161,22 @@ let lastResponse = '';
 
 
 
-// Подождем, пока весь DOM загрузится
+
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById('verifyForm');
     if(form) {
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Предотвращение стандартной отправки формы
+            e.preventDefault(); 
             var formData = new FormData(this);
 
-            fetch('verify.php', { // Убедитесь, что путь указан правильно
+            fetch('verify.php', { 
                 method: 'POST',
                 body: formData
             })
             .then(response => response.text())
             .then(data => {
                 lastResponse = data;
-                // Отображение сообщения в всплывающем окне
+                
                 showPopup(data);
             })
             .catch(error => console.error('Ошибка:', error));
@@ -186,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Функция для отображения всплывающего окна
+
 function showPopup(message) {
     var popup = document.getElementById('popup');
     var popupMessage = document.getElementById('popup-message');
@@ -196,14 +194,14 @@ function showPopup(message) {
     }
 }
 
-// Функция для закрытия всплывающего окна
+
 function closePopup() {
     var popup = document.getElementById('popup');
     if(popup) {
         popup.style.display = 'none';
     }
     if (lastResponse.includes("Код подтверждения отправлен в Telegram")) {
-        window.location.href = 'verify.php'; // Перенаправление
+        window.location.href = 'verify.php'; 
     }
 }
 </script>

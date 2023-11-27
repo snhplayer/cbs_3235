@@ -1,21 +1,21 @@
 <?php
-// Параметры подключения к базе данных
-$servername = "localhost"; // адрес сервера базы данных
-$username = "root";    // имя пользователя базы данных
-$password = "";    // пароль
-$dbname = "cbs";           // название базы данных
 
-// Создаем подключение
+$servername = "localhost"; 
+$username = "root";    
+$password = "";    
+$dbname = "cbs";          
+
+
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Проверяем подключение
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
 if(!isset($_COOKIE['user_id'])) {
 
-  // показываем кнопки регистрации и авторизации
+ 
   echo "Зарегистрируйтесь или войдите, чтобы получить доступ к сайту";
   echo "<div class=\"container\">";
   echo "<a href=\"register.php\" class=\"button\">Зарегистрироваться</a>";
@@ -24,7 +24,7 @@ if(!isset($_COOKIE['user_id'])) {
   exit();
 }
 
-// SQL запрос для выбора данных из таблицы movies
+
 $sql = "SELECT MovieID, Title, Description, Image FROM movies";
 $result = $conn->query($sql);
 $userID=$_COOKIE['user_id'];
@@ -110,18 +110,18 @@ $userID=$_COOKIE['user_id'];
         }
 
         .movie img {
-            max-width: 25%; /* гарантирует, что изображение не будет шире своего контейнера */
-            height: auto;    /* сохраняет пропорции изображения */
+            max-width: 25%; 
+            height: auto;    
         }
 
         .movie-details {
-            max-height: 150px; /* ограничивает максимальную высоту блока с описанием */
-            overflow: hidden;  /* скрывает лишний текст */
-            transition: max-height 0.3s ease; /* плавное изменение высоты */
+            max-height: 150px; 
+            overflow: hidden;  
+            transition: max-height 0.3s ease; 
         }
 
         .movie-details.expanded {
-            max-height: 500px; /* при раскрытии показывает весь текст */
+            max-height: 500px; 
             overflow: visible;
         }
 
@@ -138,33 +138,33 @@ $userID=$_COOKIE['user_id'];
 <div class="search-container">
     <input type="text" class="search-bar" placeholder="Введите название фильма...">
     <div class="filters">
-        <!-- Фильтры поиска -->
+        
     </div>
     <div class="movie-list">
-        <!-- PHP код для отображения фильмов из базы данных -->
+        
         <?php
         if ($result->num_rows > 0) {
             session_start();
             
-            // выводим данные каждой строки
+            
             while($row = $result->fetch_assoc()) {
                 $movieID = $row["MovieID"]; // MovieID получен из текущего контекста
 
-                // Подготавливаем запрос
+                
                 $stmt = $conn->prepare("SELECT SessionID FROM sessions WHERE MovieID = ?");
                 $stmt->bind_param("i", $movieID); // 'i' означает 'integer'
 
-                // Выполняем запрос
+                
                 $stmt->execute();
 
-                // Получаем результаты
+                
                 $result1 = $stmt->get_result();
                 if ($result1->num_rows > 0) {
-                    // Предполагаем, что у каждого фильма только один сеанс
+                    
                     $session = $result1->fetch_assoc();
                     $sessionID = $session['SessionID'];
                 } else {
-                    // Обработка ситуации, когда сеанс не найден
+                    
                     $sessionID = null;
                 }
                 echo "<div class='movie'>";
@@ -179,7 +179,7 @@ $userID=$_COOKIE['user_id'];
                     echo "<p>";
                     echo $row["Description"];
                 }
-                //echo "<button class=\"book-button\">Забронировать Билеты</button>";
+                
                 $_SESSION['movieID'] = $movieID;
                 $_SESSION['sessionId'] = $sessionID;
                 echo "<form action='booking.php' method='post'>";
@@ -194,8 +194,7 @@ $userID=$_COOKIE['user_id'];
         }
         $conn->close();
         ?>
-        <!-- Конец PHP кода -->
-
+        
     </div>
 </div>
 <script>
@@ -210,25 +209,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function toggleDetails(button) {
     event.stopPropagation();
-    // Находим ближайший родительский элемент класса 'movie'
+    
     var movie = button.closest('.movie');
 
-    // Внутри 'movie' находим элемент 'movie-details'
+    
     var details = movie.querySelector('.movie-details');
 
-    // Внутри 'movie-details' находим элемент 'full-description'
+    
     var fullDescription = details.querySelector('.full-description');
 
-    // Проверяем, найден ли элемент 'full-description'
+    
     if (fullDescription) {
-        // Переключаем класс 'expanded' и изменяем стиль отображения 'full-description'
+       
         if (details.classList.contains('expanded')) {
             details.classList.remove('expanded');
             fullDescription.style.display = 'none';
             button.innerText = 'Подробнее';
         } else {
             details.classList.add('expanded');
-            fullDescription.style.display = 'inline'; // Или 'inline', в зависимости от нужного стиля
+            fullDescription.style.display = 'inline'; 
             button.innerText = 'Скрыть';
         }
     } else {
