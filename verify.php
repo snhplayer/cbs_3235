@@ -14,7 +14,6 @@ if ($conn->connect_error) {
 
 session_start();
 $savedCode = $_SESSION['verificationCode'] ?? '';
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $enteredCode = $_POST['code'];
 
@@ -32,9 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		    $stmt->execute();
 
             if ($stmt->affected_rows > 0) {
-                
                 $response = "Учетная запись активирована!\n";
-                header("Location: login.php");
+                //header("Location: login.php");
                 exit($response);
             } else {
                 
@@ -200,8 +198,8 @@ function closePopup() {
     if(popup) {
         popup.style.display = 'none';
     }
-    if (lastResponse.includes("Код подтверждения отправлен в Telegram")) {
-        window.location.href = 'verify.php'; 
+    if (lastResponse.includes("Учетная запись активирована!")) {
+        window.location.href = 'login.php'; 
     }
 }
 </script>

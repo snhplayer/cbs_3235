@@ -12,6 +12,8 @@ if ($conn->connect_error) {
     die("Ошибка подключения: " . $conn->connect_error);
 }
 
+
+
 if(!isset($_COOKIE['user_id'])) {
 
   
@@ -28,7 +30,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
    
     setcookie('user_id', '', time() - 3600, '/');
 
+
     header('Location: login.php');
+    exit();
+}
+
+$user_id = $_COOKIE['user_id'];
+
+$query = $conn->prepare("SELECT isAdmin FROM users WHERE UserID = ?");
+$query->bind_param("i", $user_id);
+$query->execute();
+$result = $query->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    if ($row["isAdmin"] == 1) {
+        
+        header("Location: admin.php");
+        exit();
+    }
+} else {
+    
+    echo "Произошла ошибка.";
     exit();
 }
 
@@ -158,9 +181,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
     </div>
 
 	<div class="account-section">
+        <form action="movielist.php" method="get"> <!-- Предполагаем, что booking_page.php - это ваша страница бронирования -->
+            <button type="submit">Перейти к бронированию</button>
+        </form>
 	    <form action="userpanel.php" method="post">
 	        <button type="submit" name="logout">Выйти</button>
 	    </form>
+
 	</div>
 </div>
 

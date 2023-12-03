@@ -43,12 +43,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Ваш код подтверждения: `" . $verificationCode . "`";
         $message = urlencode($message);
         
+        $foundUser = false; // Флаг для отслеживания успешной отправки
+
         foreach ($updates['result'] as $update) {
+            if ($foundUser) {
+                break; // Если сообщение уже отправлено, прерываем цикл
+            }
+
             if (isset($update['message']['chat']['id']) && isset($update['message']['chat']['username'])) {
                 if ($update['message']['chat']['username'] == $telegram) {
                     $chat_id = $update['message']['chat']['id'];
                     $urlQuary = "https://api.telegram.org/bot" . $token . "/sendMessage?chat_id=" . $chat_id . "&parse_mode=MARKDOWN&text=" . $message;
                     file_get_contents($urlQuary);
+                    $response = "Регистрация успешна. Код подтверждения отправлен в Telegram.";
+                    $foundUser = true; // Устанавливаем флаг в true после успешной отправки
                 }
             }
         }

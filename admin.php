@@ -60,31 +60,40 @@ if ($result->num_rows > 0) {
     <h1>Панель Администратора</h1>
 
 
-    <div class="form-container">
-        <h2>Добавить Фильм</h2>
-        <form action="/add-movie" method="post">
-            <div class="form-field">
-                <label for="movie-title">Название Фильма</label>
-                <input type="text" id="movie-title" name="movie-title" required>
-            </div>
-            <div class="form-field">
-                <label for="genre">Описание</label>
-                <input type="text" id="description" name="description" required>
-            </div>
-            
-            <input type="submit" value="Добавить Фильм" class="button">
-        </form>
-    </div>
+	<div class="form-container">
+	    <h2>Добавить Фильм</h2>
+	    <form id="add-movie-form" method="post" enctype="multipart/form-data">
+	        <div class="form-field">
+	            <label for="movie-title">Название Фильма</label>
+	            <input type="text" id="movie-title" name="movie-title" required>
+	        </div>
+	        <div class="form-field">
+	            <label for="description">Описание</label>
+	            <input type="text" id="description" name="description" required>
+	        </div>
+	        <div class="form-field">
+	            <label for="movie-image">Картинка Фильма</label>
+	            <input type="file" id="movie-image" name="movie-image" accept="image/*">
+	        </div>
+	        <input type="submit" value="Добавить Фильм" class="button">
+	    </form>
+	</div>
+
 
     
     <div class="form-container">
         <h2>Добавить Сеанс</h2>
-        <form action="/add-session" method="post">
+        <form id="add-session-form" action="/add-session" method="post">
             <div class="form-field">
                 <label for="session-movie">Фильм</label>
-                <select id="session-movie" name="session-movie">
-                   
-                </select>
+				<select id="session-movie" name="session-movie">
+				    <?php
+				    $movies = $conn->query("SELECT * FROM movies");
+				    while($movie = $movies->fetch_assoc()) {
+				        echo "<option value='".$movie['MovieID']."'>".$movie['Title']."</option>";
+				    }
+				    ?>
+				</select>
             </div>
             <div class="form-field">
                 <label for="session-time">Время Сеанса</label>
@@ -121,6 +130,96 @@ if ($result->num_rows > 0) {
         ?>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Функция для обновления списка фильмов
+    function updateMovieList() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'get_movies.php', true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var movies = JSON.parse(xhr.responseText);
+                var movieSelect = document.getElementById('session-movie');
+                movieSelect.innerHTML = '';
+                movies.forEach(function(movie) {
+                    var option = document.createElement('option');
+                    option.value = movie.MovieID;
+                    option.textContent = movie.Title;
+                    movieSelect.appendChild(option);
+                });
+            }
+        };
+        xhr.send();
+    }
 
+    // Функция для отправки формы добавления фильма
+    document.getElementById('add-movie-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "add_movie.php", true);
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                location.reload();
+            }
+        };
+        xhr.send(formData);
+    });
+
+    // Функция для отправки формы добавления сеанса
+    document.getElementById('add-session-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "add_session.php", true);
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+               location.reload();
+            }
+        };
+        xhr.send(formData);
+    });
+
+    // Функция для удаления элементов
+    function deleteItem(id, type) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'delete_item.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var elementId = type + '-' + id;
+                var element = document.getElementById(elementId);
+                if (element) {
+                    element.parentNode.removeChild(element);
+                }
+            }
+        };
+        xhr.send('id=' + id + '&type=' + type);
+    }
+
+    // Обработчики для кнопок удаления
+    document.querySelectorAll('.delete-movie').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var movieId = this.getAttribute('data-movie-id');
+            deleteItem(movieId, 'movie');
+            location.reload();
+        });
+    });
+
+    document.querySelectorAll('.delete-session').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var sessionId = this.getAttribute('data-session-id');
+            deleteItem(sessionId, 'session');
+            location.reload();
+        });
+    });
+
+    // Запуск начального обновления списка фильмов
+    updateMovieList();
+});
+
+</script>
 </body>
 </html>
