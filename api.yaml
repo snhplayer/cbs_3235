@@ -1,0 +1,290 @@
+openapi: 3.0.0
+info:
+  title: Cinema Booking System
+  description: API for cinema booking system
+  version: 1.0.0
+servers:
+  - url: http://localhost
+paths:
+
+  /add_movie:
+    post:
+      tags:
+        - Movies
+      description: Add a new movie
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                movie-title:
+                  type: string
+                  description: Movie title
+                description:
+                  type: string 
+                  description: Movie description
+                movie-image:
+                  type: string
+                  format: binary
+                  description: Movie image
+      responses:
+        '200':
+          description: Movie added successfully
+        '400':
+          description: Bad request  
+          
+  /add_session:
+    post:
+      tags:
+        - Sessions  
+      description: Add a new session
+      requestBody:  
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                session-movie:
+                  type: integer
+                  description: Movie ID
+                session-time:
+                  type: string 
+                  format: date-time
+                  description: Session time
+      responses:
+        '200':
+          description: Session added successfully
+        '400':
+          description: Bad request
+              
+  /delete_item:
+    post:
+      tags:
+        - Admin
+      summary: Delete movie or session
+      description: Deletes a movie or session along with associated bookings
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object  
+              properties:
+                id:
+                  type: integer
+                  description: Movie or session ID
+                type:
+                  type: string
+                  enum: [movie, session]
+      responses:
+        '200':
+          description: Deletion successful
+       
+  /get_movies:
+    get:
+      tags:
+        - Movies  
+      summary: Get list of movies
+      description: Returns a list of movie IDs and titles
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    MovieID:
+                      type: integer   
+                      example: 1
+                    Title:
+                      type: string
+                      example: The Matrix
+                      
+  /index:
+    get:
+      tags:
+        - Home
+      summary: Home page
+      description: Renders home page  
+      
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      description: Authenticates and logs in a registered user
+      requestBody:
+        content:  
+          application/x-www-form-urlencoded:
+            schema:
+              type: object  
+              properties:
+                username:
+                  type: string
+                password: 
+                  type: string
+      responses:  
+        '200':
+          description: Login successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Login successful
+        '400':
+          description: Invalid credentials  
+          content:
+            text/plain:
+              schema:  
+                type: string
+                example: Invalid password
+                
+  /movielist:
+    get:
+      tags: 
+        - Movies
+      summary: List movies
+      description: Retrieves list of movies from database
+      responses:
+        '200':  
+          description: List of movies
+          content:
+            text/html:
+              schema:
+                type: string
+               
+  /book:
+    post:
+      tags:
+        - Bookings
+      description: Make a booking  
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                row:
+                  type: integer
+                  description: Row number
+                seat:
+                  type: integer
+                  description: Seat number  
+                sessionId:
+                  type: integer
+                  description: Session ID
+                user_id:
+                  type: integer
+                  description: User ID
+                bookingTime:
+                  type: string
+                  format: date-time
+                  description: Booking time
+      responses:
+        '200':
+          description: Booking successful
+        '400':
+          description: Bad request
+                
+  /register:
+    post:
+      tags:
+        - Auth  
+      summary: User registration
+      description: Registers a new user
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                telegram: 
+                  type: string
+      responses:
+        '200':
+          description: Registration successful
+        '400':
+          description: Username exists
+          
+  /verify:
+    post:
+      tags:
+        - Auth   
+      summary: Verify registration
+      description: Verifies registration code
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:  
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Verification code
+      responses:
+        '200':
+          description: Verification successful
+        '400':
+          description: Invalid code
+          
+  /userpanel:
+    get:
+      tags:
+        - User  
+      summary: User's account page
+      description: Renders account page for logged in user
+    post:
+      summary: Logout user
+      description: Logs out current user
+      
+  /movielist:
+    get:
+      summary: List movies
+      description: Shows list of movies to logged in user
+      
+components:
+
+  schemas:
+
+    Movie:
+      type: object
+      properties:
+        MovieID:
+          type: integer
+          example: 1
+        Title:
+          type: string 
+          example: The Matrix
+        Description:
+          type: string
+        Image:
+          type: string
+          format: binary
+
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        passwordHash:
+          type: string  
+        telegram:
+          type: string
+        isAdmin:
+          type: boolean
+
+  securitySchemes:
+    cookieAuth:    
+      type: apiKey
+      in: cookie  
+      name: user_id
+
+security:
+  - cookieAuth: []
