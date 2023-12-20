@@ -1,0 +1,429 @@
+openapi: 3.0.0
+info:
+  title: Cinema Booking System
+  description: API for cinema booking system
+  version: 1.0.0
+servers:
+- url: http://localhost
+security:
+- cookieAuth: []
+paths:
+  /add_movie.php:
+    post:
+      tags:
+      - Movies
+      summary: Add movie
+      description: Adds a new movie
+      operationId: add_movie_phpPOST
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/add_movie_php_body'
+      responses:
+        "200":
+          description: Movie added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+      x-swagger-router-controller: Movies
+  /add_session.php:
+    post:
+      tags:
+      - Sessions
+      summary: Add session
+      description: Adds a new movie screening session
+      operationId: add_session_phpPOST
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/add_session_php_body'
+      responses:
+        "200":
+          description: Session added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_1'
+      x-swagger-router-controller: Sessions
+  /delete_item.php:
+    post:
+      tags:
+      - Admin
+      summary: Delete movie or session
+      description: Deletes movie or session with bookings
+      operationId: delete_item_phpPOST
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/delete_item_php_body'
+      responses:
+        "200":
+          description: Deletion successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Movie and associated sessions/bookings deleted
+                x-content-type: text/plain
+      x-swagger-router-controller: Admin
+  /get_movies.php:
+    get:
+      tags:
+      - Movies
+      summary: Get movies
+      description: Retrieves list of movies
+      operationId: get_movies_phpGET
+      responses:
+        "200":
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_2'
+                x-content-type: application/json
+      x-swagger-router-controller: Movies
+  /index.php:
+    get:
+      tags:
+      - Home
+      summary: Home page
+      description: Renders home page
+      operationId: index_phpGET
+      responses:
+        "200":
+          description: Home page
+          content:
+            text/html:
+              schema:
+                type: string
+                x-content-type: text/html
+      x-swagger-router-controller: Home
+  /login.php:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      description: Authenticates user
+      operationId: login_phpPOST
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/login_php_body'
+      responses:
+        "200":
+          description: Login successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Login successful
+                x-content-type: text/plain
+        "400":
+          description: Invalid credentials
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Invalid password
+                x-content-type: text/plain
+      x-swagger-router-controller: Auth
+  /movielist.php:
+    get:
+      tags:
+      - Movies
+      summary: List movies
+      description: Retrieves list of movies
+      operationId: movielist_phpGET
+      responses:
+        "200":
+          description: List of movies
+          content:
+            text/html:
+              schema:
+                type: string
+                x-content-type: text/html
+      x-swagger-router-controller: Movies
+  /book.php:
+    post:
+      tags:
+      - Bookings
+      summary: Book tickets
+      description: Books movie tickets
+      operationId: book_phpPOST
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/book_php_body'
+      responses:
+        "200":
+          description: Booking successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Booking successful
+                x-content-type: text/plain
+        "400":
+          description: Booking failed
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Error making booking
+                x-content-type: text/plain
+      x-swagger-router-controller: Bookings
+  /booking.php:
+    get:
+      tags:
+      - Bookings
+      summary: Seat booking page
+      description: Renders seat booking page
+      operationId: booking_phpGET
+      x-swagger-router-controller: Bookings
+  /userpanel.php:
+    get:
+      tags:
+      - User
+      summary: User account page
+      description: Renders account page for user
+      operationId: userpanel_phpGET
+      x-swagger-router-controller: User
+    post:
+      summary: Logout
+      description: Logs out user
+      operationId: userpanel_phpPOST
+      x-swagger-router-controller: Default
+  /verify.php:
+    post:
+      tags:
+      - Auth
+      summary: Verify registration
+      description: Verifies registration code
+      operationId: verify_phpPOST
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/verify_php_body'
+      responses:
+        "200":
+          description: Verification successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Account activated
+                x-content-type: text/plain
+        "400":
+          description: Invalid code
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Invalid verification code
+                x-content-type: text/plain
+      x-swagger-router-controller: Auth
+  /register.php:
+    post:
+      tags:
+      - Auth
+      summary: Register user
+      description: Registers a new user
+      operationId: register_phpPOST
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/register_php_body'
+      responses:
+        "200":
+          description: Registration successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Registration successful, verification code sent"
+                x-content-type: text/plain
+        "400":
+          description: Username exists
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Username already exists
+                x-content-type: text/plain
+      x-swagger-router-controller: Auth
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        MovieID:
+          type: integer
+        Title:
+          type: string
+        Description:
+          type: string
+        Image:
+          type: string
+          format: binary
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        passwordHash:
+          type: string
+        telegram:
+          type: string
+        isAdmin:
+          type: boolean
+    add_movie_php_body:
+      type: object
+      properties:
+        movie-title:
+          type: string
+        description:
+          type: string
+        movie-image:
+          type: string
+          format: binary
+    inline_response_200:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Movie successfully added
+      example:
+        message: Movie successfully added
+        status: success
+    inline_response_400:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: Invalid image format
+    add_session_php_body:
+      type: object
+      properties:
+        session-movie:
+          type: integer
+        session-time:
+          type: string
+          format: date-time
+    inline_response_200_1:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Session successfully added
+        sessionId:
+          type: integer
+          example: 42
+        sessionInfo:
+          type: string
+          example: Movie ID 5 - 2023-01-01T12:00
+      example:
+        sessionInfo: Movie ID 5 - 2023-01-01T12:00
+        sessionId: 42
+        message: Session successfully added
+        status: success
+    inline_response_400_1:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: Error adding session
+    delete_item_php_body:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum:
+          - movie
+          - session
+    inline_response_200_2:
+      type: object
+      properties:
+        MovieID:
+          type: integer
+        Title:
+          type: string
+      example:
+        MovieID: 0
+        Title: Title
+    login_php_body:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    book_php_body:
+      type: object
+      properties:
+        row:
+          type: integer
+        seat:
+          type: integer
+        sessionId:
+          type: integer
+        user_id:
+          type: integer
+        bookingTime:
+          type: string
+          format: date-time
+    verify_php_body:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Verification code
+    register_php_body:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        telegram:
+          type: string
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      name: user_id
+      in: cookie
