@@ -13,13 +13,7 @@ if ($conn->connect_error) {
 }
 
 if(!isset($_COOKIE['user_id'])) {
-  
-  echo "Зарегистрируйтесь или войдите, чтобы получить доступ к сайту";
-  echo "<div class=\"container\">";
-
-  echo "<a href=\"register.php\" class=\"button\">Зарегистрироваться</a>";
-  echo "<a href=\"login.php\" class=\"button\">Войти</a>";
-  echo "</div>";
+  header('Location: index.php');
   exit();
 }
 
@@ -45,9 +39,7 @@ if ($result->num_rows > 0) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
    
-    setcookie('user_id', '', time() - 3600, '/');
-
-
+    setcookie('user_id', '', time() - 3600); 
     header('Location: index.php');
     exit();
 }

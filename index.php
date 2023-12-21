@@ -51,7 +51,7 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['username']) && isset($_COOKIE[
     $_SESSION['loggedin'] = false;
 }
 
-if (!isset($_COOKIE['user_id'])) {
+if (isset($_COOKIE['user_id'])) {
     header("Location: userpanel.php");
     exit();
 } else {

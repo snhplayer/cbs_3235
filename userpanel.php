@@ -15,23 +15,16 @@ if ($conn->connect_error) {
 
 
 if(!isset($_COOKIE['user_id'])) {
-
-  
-  echo "Зарегистрируйтесь или войдите, чтобы получить доступ к сайту";
-  echo "<div class=\"container\">";
-
-  echo "<a href=\"register.php\" class=\"button\">Зарегистрироваться</a>";
-  echo "<a href=\"login.php\" class=\"button\">Войти</a>";
-  echo "</div>";
+  header('Location: index.php');
   exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
-   
-    setcookie('user_id', '', time() - 3600, '/');
+    
+    //setcookie('user_id', '', time() - 3600, '/');
+    setcookie('user_id', '', time() - 3600); 
 
-
-    header('Location: login.php');
+    header('Location: index.php');
     exit();
 }
 
@@ -147,10 +140,6 @@ if ($result->num_rows > 0) {
         <p>@<?php echo $_COOKIE['telegram_id'] ?></p>
     </div>
 
-    <div class="account-section">
-        <label>Пароль:</label>
-        <button>Изменить пароль</button>
-    </div>
 <h3>История бронирований</h3>
     <div class="account-section scrollable-section">
         
