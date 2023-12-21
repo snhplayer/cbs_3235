@@ -43,6 +43,15 @@ if ($result->num_rows > 0) {
     exit();
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
+   
+    setcookie('user_id', '', time() - 3600, '/');
+
+
+    header('Location: index.php');
+    exit();
+}
+
 ?>
 
 
@@ -87,12 +96,7 @@ if ($result->num_rows > 0) {
             <div class="form-field">
                 <label for="session-movie">Фильм</label>
 				<select id="session-movie" name="session-movie">
-				    <?php
-				    $movies = $conn->query("SELECT * FROM movies");
-				    while($movie = $movies->fetch_assoc()) {
-				        echo "<option value='".$movie['MovieID']."'>".$movie['Title']."</option>";
-				    }
-				    ?>
+
 				</select>
             </div>
             <div class="form-field">
@@ -128,29 +132,42 @@ if ($result->num_rows > 0) {
             echo "</div>";
         }
         ?>
+        <div class="exit">
+        <form action="admin.php" method="post">
+            <button type="submit" name="logout">Выйти</button>
+        </form>
+        </div>
     </div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Функция для обновления списка фильмов
     function updateMovieList() {
+        var movieSelect = document.getElementById('session-movie');
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'get_movies.php', true);
+        xhr.open('GET', 'get_movies.php');
+
         xhr.onload = function() {
-            if (xhr.status === 200) {
-                var movies = JSON.parse(xhr.responseText);
-                var movieSelect = document.getElementById('session-movie');
-                movieSelect.innerHTML = '';
-                movies.forEach(function(movie) {
-                    var option = document.createElement('option');
-                    option.value = movie.MovieID;
-                    option.textContent = movie.Title;
-                    movieSelect.appendChild(option);
-                });
+          var movies = JSON.parse(xhr.responseText);
+          
+          movies.forEach(function(movie) {
+          
+            var option = document.createElement('option');
+            option.value = movie.MovieID; 
+            option.textContent = movie.Title;
+
+            if(movie.session_count > 0) {
+              option.disabled = true;
+              option.textContent += " (сеансы уже назначены)";
             }
-        };
+
+            movieSelect.appendChild(option);
+          });
+
+        }
+
         xhr.send();
-    }
+        }
 
     // Функция для отправки формы добавления фильма
     document.getElementById('add-movie-form').addEventListener('submit', function(e) {
