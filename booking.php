@@ -39,6 +39,21 @@ echo "</script>";
 
 ?>
 
+<?php
+$session_sql = "SELECT MovieID, SessionTime 
+        FROM sessions 
+        WHERE SessionID = $sessionId";
+$session_result = mysqli_query($conn, $session_sql);
+$session = mysqli_fetch_assoc($session_result);
+$movieId = $session['MovieID'];
+$movie_sql = "SELECT Title FROM movies WHERE MovieID = $movieId;";
+$movie_result = mysqli_query($conn, $movie_sql);
+$movie = mysqli_fetch_assoc($movie_result);
+$movieName = $movie['Title']; 
+$sessionTime = $session['SessionTime'];
+
+?>
+
 
 
 
@@ -46,6 +61,7 @@ echo "</script>";
 <html>
 <head>
     <title>Выбор Сидений</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -146,7 +162,10 @@ echo "</script>";
 </head>
 <body>
 <div class="seating-chart">
-
+    <?php
+    echo "<h2>$movieName</h2>";
+	echo "<p>Начало сеанса: $sessionTime</p>";
+    ?>
   <h2>Выбор сидений</h2>
   
     <?php  

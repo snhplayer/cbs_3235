@@ -132,13 +132,26 @@ $userID=$_COOKIE['user_id'];
           text-decoration: underline;
           font-size: 14px;
         }
+
+        .userpanel button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    
+}
     </style>
 </head>
 <body>
+
 <div class="search-container">
-    <input type="text" class="search-bar" placeholder="Введите название фильма...">
+    <h2>Список фильмов</h2>
     <div class="filters">
-        
+            <div class="userpanel">
+    <button type="button" class="personal-cabinet-button" onclick="location.href='userpanel.php'">Личный кабинет</button>
+    </div>
     </div>
     <div class="movie-list">
         
@@ -182,6 +195,13 @@ $userID=$_COOKIE['user_id'];
                 
                 $_SESSION['movieID'] = $movieID;
                 $_SESSION['sessionId'] = $sessionID;
+                       if ($sessionID != null) {
+                       echo "<form action='booking.php' method='post'>";
+                       echo "<button type='submit' class='book-button'>Забронировать Билеты</button>";
+                       echo "</form>";
+                   } else {
+                       echo "<button class='book-button' disabled>Забронировать Билеты (Недоступно)</button>";
+                   }
                 echo "<form action='booking.php' method='post'>";
                 echo "<button 'type='submit' class='book-button'>Забронировать Билеты</button>";
                 echo "</form>";
@@ -196,6 +216,7 @@ $userID=$_COOKIE['user_id'];
         ?>
         
     </div>
+
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', (event) => {
