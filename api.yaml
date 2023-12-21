@@ -244,7 +244,7 @@ paths:
       summary: Logout user
       description: Logs out current user
       
-  /movielist:
+  /movielist/{id}:
     get:
       summary: List movies
       description: Shows list of movies to logged in user
