@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         session_start();
         $response = "Регистрация успешна. Код подтверждения отправлен в Telegram.";
 
-        $token = "6548654830:AAGKqmo6Z2R-SaGnKpknrkt-SLWd3yeL5Zw";
+        $token = "<token>";
         $updates = getTelegramUpdates($token);
         $verificationCode = generateVerificationCode();
         $_SESSION['verificationCode']=$verificationCode;
